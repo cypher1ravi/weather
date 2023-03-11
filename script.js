@@ -91,7 +91,7 @@ const del = () => {
         .then(response => console.log(response))
         .catch(err => console.error(err));
 }
-del("delhi")
+del("delhi");
 
 const luck = () => {
     fetch('https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=lucknow', options)
