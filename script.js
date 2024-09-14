@@ -1,36 +1,45 @@
+const API_KEY = '2dfea15052msh5556fce1e61f501p17d012jsn47690de4e772';
+const API_HOST = 'weatherapi-com.p.rapidapi.com';
+const API_URL = 'https://weatherapi-com.p.rapidapi.com/current.json?q=';
+
 const options = {
     method: 'GET',
     headers: {
-        'x-rapidapi-key': '2dfea15052msh5556fce1e61f501p17d012jsn47690de4e772',
-        'x-rapidapi-host': 'weatherapi-com.p.rapidapi.com'
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': API_HOST
     }
 };
 
-const getweather = (city) => {
-    cityName.innerHTML = city;
-    fetch('https://weatherapi-com.p.rapidapi.com/current.json?q=' + city, options)
-        .then(response => response.json())
-        .then(response => {
-            const current = response.current;
+const getweather = async (city) => {
+    try {
+        cityName.textContent = city;
+        const response = await fetch(API_URL + encodeURIComponent(city), options);
+        const data = await response.json();
+        const { current, location } = data;
 
-            // Populate data in respective cards
-            temp.innerHTML = current.temp_c;
-            min_temp.innerHTML = current.temp_c - 2; // Placeholder, adjust as needed
-            max_temp.innerHTML = current.temp_c + 2; // Placeholder, adjust as needed
-            pressure.innerHTML = current.pressure_mb;
-            visibility.innerHTML = current.vis_km * 1000; // Convert to meters
-            humidity.innerHTML = current.humidity;
-            cloud_pct.innerHTML = current.cloud;
-            feels_like.innerHTML = current.feelslike_c;
-            dew_point.innerHTML = current.dewpoint_c;
-            wind_speed.innerHTML = current.wind_kph;
-            wind_deg.innerHTML = current.wind_degree;
+        // Update DOM elements using an object for cleaner code
+        const updates = {
+            temp: current.temp_c,
+            min_temp: current.temp_c - 2,
+            max_temp: current.temp_c + 2,
+            pressure: current.pressure_mb,
+            visibility: current.vis_km * 1000,
+            humidity: current.humidity,
+            cloud_pct: current.cloud,
+            feels_like: current.feelslike_c,
+            dew_point: current.dewpoint_c,
+            wind_speed: current.wind_kph,
+            wind_deg: current.wind_degree,
+            sunrise: location.localtime.split(" ")[1],
+            sunset: location.localtime.split(" ")[1]
+        };
 
-            // Placeholder values for sunrise/sunset
-            sunrise.innerHTML = response.location.localtime.split(" ")[1];
-            sunset.innerHTML = response.location.localtime.split(" ")[1];
-        })
-        .catch(err => console.error(err));
+        Object.entries(updates).forEach(([key, value]) => {
+            document.getElementById(key).textContent = value;
+        });
+    } catch (err) {
+        console.error('Error fetching weather data:', err);
+    }
 };
 
 submit.addEventListener("click", (e) => {

@@ -14,116 +14,289 @@
             background-image: url(./bg.gif);
             background-repeat: no-repeat;
             background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
         }
 
         .ghost-card {
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 25px;
             transition: all 0.3s ease;
-            height: auto;
-            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
         }
 
         .ghost-card:hover {
-            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
         }
 
         .card-header {
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .card-body {
-            padding-top: 10px;
+            padding-top: 20px;
+            color: #f0f0f0;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        @media (min-width: 640px) {
+        @media (max-width: 640px) {
             .ghost-card {
-                height: 200px;
-                margin: 10px;
+                margin-bottom: 20px;
             }
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffecd2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .data-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            pointer-events: none;
         }
     </style>
 </head>
 
-<body>
-    <nav class="bg-blue-300 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a class="text-2xl font-bold text-white" href="#">Weather</a>
-            <form class="flex items-center">
-                <input id="city" class="form-input px-4 py-2 rounded-l-md" type="search" placeholder="Search">
-                <button id="submit" class="bg-yellow-400 text-white px-4 py-2 rounded-r-md">Search</button>
+<body class="bg-gradient-to-br from-blue-400 to-purple-500">
+    <nav class="bg-transparent p-6">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+            <a class="text-4xl font-bold text-white mb-4 sm:mb-0 gradient-text" href="#">Weather App</a>
+            <form class="flex items-center w-full sm:w-auto">
+                <input id="city" class="form-input px-4 py-2 rounded-l-full w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400" type="search" placeholder="Enter city name">
+                <button id="submit" class="bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-2 rounded-r-full transition duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-600">Search</button>
             </form>
         </div>
     </nav>
 
-    <div class="container mx-auto mt-8">
-        <h2 class="text-3xl text-center ">Weather for <span id="cityName" class="font-bold"></span></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+    <div class="container mx-auto mt-12 px-4">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl text-center text-white mb-8 sm:mb-12 gradient-text">Weather for <span id="cityName" class="font-bold"></span></h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
 
             <!-- Temperature Card -->
-            <div class="ghost-card">
-                <div class="card-header"><i class="fas fa-thermometer-half"></i> Temperature</div>
-                <div class="card-body">
-                    <p>Current Temperature: <span id="temp"></span>°C</p>
-                    <p>Min Temperature: <span id="min_temp"></span>°C</p>
-                    <p>Max Temperature: <span id="max_temp"></span>°C</p>
+            <div class="ghost-card col-span-1 sm:col-span-2 lg:col-span-4">
+                <div class="card-header bg-gradient-to-r from-blue-400 to-green-500 text-white p-3 sm:p-5 rounded-t-lg flex items-center">
+                    <i class="fas fa-thermometer-half mr-2 sm:mr-3 text-2xl sm:text-3xl"></i>Temperature
+                </div>
+                <div class="card-body bg-gradient-to-b from-green-400 via-teal-500 to-cyan-600 p-4 sm:p-8 rounded-b-lg shadow-lg flex justify-around items-center flex-wrap relative overflow-hidden" style="min-height: 200px;">
+                    <!-- Decorative element -->
+                    <div class="absolute top-0 right-0 w-24 sm:w-32 h-16 sm:h-20 bg-white opacity-50 rounded-full" style="transform: translate(30%, -30%);"></div>
+                    <!-- Grid layout for data -->
+                    <div class="grid grid-cols-3 gap-4 sm:gap-6 z-10 w-full">
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-temperature-high text-3xl sm:text-4xl text-yellow-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Current</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="temp" class="data-value"></span>°C</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-temperature-low text-3xl sm:text-4xl text-blue-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Min</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="min_temp" class="data-value"></span>°C</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-temperature-high text-3xl sm:text-4xl text-red-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Max</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="max_temp" class="data-value"></span>°C</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Pressure & Visibility Card -->
-            <div class="ghost-card">
-                <div class="card-header"><i class="fas fa-tachometer-alt"></i> Pressure & Visibility</div>
-                <div class="card-body">
-                    <p>Pressure: <span id="pressure"></span> hPa</p>
-                    <p>Visibility: <span id="visibility"></span> m</p>
+            <div class="ghost-card col-span-1 sm:col-span-2 lg:col-span-4">
+                <div class="card-header bg-gradient-to-r from-purple-400 to-pink-500 text-white p-3 sm:p-5 rounded-t-lg flex items-center">
+                    <i class="fas fa-tachometer-alt mr-2 sm:mr-3 text-2xl sm:text-3xl"></i>Pressure & Visibility
+                </div>
+                <div class="card-body bg-gradient-to-b from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-8 rounded-b-lg shadow-lg flex justify-around items-center flex-wrap relative overflow-hidden" style="min-height: 200px;">
+                    <!-- Decorative element -->
+                    <div class="absolute top-0 right-0 w-24 sm:w-32 h-16 sm:h-20 bg-white opacity-50 rounded-full" style="transform: translate(30%, -30%);"></div>
+                    <!-- Grid layout for data -->
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6 z-10 w-full">
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-compress-alt text-3xl sm:text-4xl text-blue-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Pressure</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="pressure" class="data-value"></span> hPa</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-eye text-3xl sm:text-4xl text-gray-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Visibility</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="visibility" class="data-value"></span> m</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Humidity & Clouds Card -->
-            <div class="ghost-card">
-                <div class="card-header"><i class="fas fa-tint"></i> Humidity & Clouds</div>
-                <div class="card-body">
-                    <p>Humidity: <span id="humidity"></span>%</p>
-                    <p>Cloud Cover: <span id="cloud_pct"></span>%</p>
-                    <p>Feels Like: <span id="feels_like"></span>°C</p>
-                    <p>Dew Point: <span id="dew_point"></span>°C</p>
+            <!-- Humidity & Clouds Card -->         
+            <div class="ghost-card col-span-1 sm:col-span-2 lg:col-span-4">
+                <div class="card-header bg-gradient-to-r from-blue-400 to-purple-500 text-white p-3 sm:p-5 rounded-t-lg flex items-center">
+                    <i class="fas fa-tint mr-2 sm:mr-3 text-2xl sm:text-3xl"></i>Humidity & Clouds
+                </div>
+                <div class="card-body bg-gradient-to-b from-purple-400 via-blue-500 to-indigo-600 p-4 sm:p-8 rounded-b-lg shadow-lg flex justify-around items-center flex-wrap relative overflow-hidden" style="min-height: 200px;">
+                    <!-- Cloud -->
+                    <div class="absolute top-0 right-0 w-24 sm:w-32 h-16 sm:h-20 bg-white opacity-50 rounded-full" style="transform: translate(30%, -30%);"></div>
+                    <!-- Grid layout for data -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 z-10 w-full">
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-tint text-3xl sm:text-4xl text-blue-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Humidity</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="humidity" class="data-value"></span>%</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-cloud text-3xl sm:text-4xl text-gray-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Cloud Cover</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="cloud_pct" class="data-value"></span>%</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-thermometer-half text-3xl sm:text-4xl text-red-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Feels Like</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="feels_like" class="data-value"></span>°C</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-water text-3xl sm:text-4xl text-green-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Dew Point</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="dew_point" class="data-value"></span>°C</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Wind Card -->
-            <div class="ghost-card">
-                <div class="card-header"><i class="fas fa-wind"></i> Wind</div>
-                <div class="card-body">
-                    <p>Wind Speed: <span id="wind_speed"></span> Km/h</p>
-                    <p>Wind Direction: <span id="wind_deg"></span>°</p>
+            <div class="ghost-card col-span-1 sm:col-span-2 lg:col-span-4">
+                <div class="card-header bg-gradient-to-r from-blue-400 to-teal-500 text-white p-3 sm:p-5 rounded-t-lg flex items-center">
+                    <i class="fas fa-wind mr-2 sm:mr-3 text-2xl sm:text-3xl"></i>Wind
+                </div>
+                <div class="card-body bg-gradient-to-b from-teal-400 via-blue-500 to-cyan-600 p-4 sm:p-8 rounded-b-lg shadow-lg flex justify-around items-center flex-wrap relative overflow-hidden" style="min-height: 200px;">
+                    <!-- Wind icon -->
+                    <div class="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 text-white opacity-50" style="transform: translate(30%, -30%);">
+                        <i class="fas fa-fan animate-spin text-6xl sm:text-7xl"></i>
+                    </div>
+                    <!-- Grid layout for data -->
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6 z-10 w-full">
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-tachometer-alt text-3xl sm:text-4xl text-blue-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Speed</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="wind_speed" class="data-value"></span> Km/h</p>
+                        </div>
+                        <div class="flex flex-col items-center p-2 sm:p-4 rounded-lg bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
+                            <i class="fas fa-compass text-3xl sm:text-4xl text-gray-200 mb-1 sm:mb-2"></i>
+                            <p class="text-white text-sm sm:text-lg">Direction</p>
+                            <p class="text-xl sm:text-2xl font-bold text-white"><span id="wind_deg" class="data-value"></span> degrees</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Sunrise/Sunset Card -->
-            <!-- <div class="ghost-card">
-                <div class="card-header"><i class="fas fa-sun"></i> Sunrise & Sunset</div>
-                <div class="card-body">
-                    <p>Sunrise: <span id="sunrise"></span></p>
-                    <p>Sunset: <span id="sunset"></span></p>
+            <div class="ghost-card col-span-1 sm:col-span-2 lg:col-span-4">
+                <div class="card-header bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 sm:p-5 rounded-t-lg flex items-center">
+                    <i class="fas fa-sun mr-2 sm:mr-3 text-2xl sm:text-3xl"></i>Sunrise & Sunset
                 </div>
-            </div> -->
+                <div class="card-body bg-gradient-to-b from-orange-400 via-pink-500 to-purple-600 p-4 sm:p-8 rounded-b-lg shadow-lg flex justify-around items-center flex-wrap relative overflow-hidden" style="min-height: 200px;">
+                    <!-- Sun -->
+                    <div class="absolute bottom-0 left-0 w-24 sm:w-32 h-24 sm:h-32 bg-yellow-300 rounded-full" style="transform: translate(-30%, 50%);"></div>
+                    <!-- Time display -->
+                    <p class="flex flex-col items-center mb-4 sm:mb-0 z-10">
+                        <span class="text-white text-lg sm:text-xl mb-2 sm:mb-3">Sunrise</span>
+                        <span id="sunrise" class="font-semibold text-2xl sm:text-3xl text-white data-value"></span>
+                    </p>
+                    <p class="flex flex-col items-center z-10">
+                        <span class="text-white text-lg sm:text-xl mb-2 sm:mb-3">Sunset</span>
+                        <span id="sunset" class="font-semibold text-2xl sm:text-3xl text-white data-value"></span>
+                    </p>
+                </div>
+            </div>
 
         </div>
     </div>
 
-    <!-- <footer class="bg-blue-300 p-4 mt-[12%] ">
+    <footer class="bg-transparent p-6 sm:p-8 mt-12 sm:mt-16">
         <div class="text-center text-white">
-            <p>Developed by - <span class="text-red-500">Ravindra</span>. | &copy; 2023 All rights reserved.</p>
+            <p class="text-lg">Developed with <i class="fas fa-heart text-red-500"></i> by <span class="font-bold gradient-text">Ravindra</span> | &copy; 2023 All rights reserved.</p>
         </div>
-    </footer> -->
+    </footer>
 
     <script src="script.js"></script>
 </body>
 
 </html>
+<style>
+    /* Humidity and Cloud Card Styles */
+    .humidity-cloud-card {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 20px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .humidity-cloud-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .humidity-cloud-header {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .humidity-cloud-body {
+        padding-top: 20px;
+        color: #f0f0f0;
+    }
+
+    .humidity-cloud-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ffffff;
+    }
+
+    .humidity-cloud-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .humidity-cloud-label {
+        font-size: 1.2rem;
+        color: #e0e0e0;
+    }
+</style>
