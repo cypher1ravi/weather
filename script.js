@@ -10,41 +10,75 @@ const options = {
     }
 };
 
-const getweather = async (city) => {
-    try {
-        cityName.textContent = city;
-        const response = await fetch(API_URL + encodeURIComponent(city), options);
-        const data = await response.json();
-        const { current, location } = data;
+const getUserLocation = () => {
+    return new Promise((resolve, reject) => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                position => resolve(`${position.coords.latitude},${position.coords.longitude}`),
+                error => reject(error)
+            );
+        } else {
+            reject(new Error("Geolocation is not supported by this browser."));
+        }
+    });
+};
 
-        // Update DOM elements using an object for cleaner code
+const getweather = async (location) => {
+    try {
+        const response = await fetch(API_URL + encodeURIComponent(location), options);
+        const data = await response.json();
+        const { current, location: locationData } = data;
+
+        // Update city name
+        document.getElementById('cityName').textContent = locationData.name;
+
+        // Update DOM elements
         const updates = {
             temp: current.temp_c,
-            min_temp: current.temp_c - 2,
-            max_temp: current.temp_c + 2,
+            min_temp: Math.round(current.temp_c - 2), // Approximation
+            max_temp: Math.round(current.temp_c + 2), // Approximation
             pressure: current.pressure_mb,
             visibility: current.vis_km * 1000,
             humidity: current.humidity,
             cloud_pct: current.cloud,
             feels_like: current.feelslike_c,
-            dew_point: current.dewpoint_c,
             wind_speed: current.wind_kph,
             wind_deg: current.wind_degree,
-            sunrise: location.localtime.split(" ")[1],
-            sunset: location.localtime.split(" ")[1]
+            // Note: sunrise and sunset are not available in the current data
         };
 
         Object.entries(updates).forEach(([key, value]) => {
-            document.getElementById(key).textContent = value;
+            const element = document.getElementById(key);
+            if (element) {
+                element.textContent = value;
+            } else {
+                console.warn(`Element with id '${key}' not found`);
+            }
         });
+
+        console.log('Weather data updated:', updates);
     } catch (err) {
         console.error('Error fetching weather data:', err);
     }
 };
 
+// Modify the event listener
 submit.addEventListener("click", (e) => {
     e.preventDefault();
     getweather(city.value);
 });
 
-getweather("Singrauli");
+// Add a function to get user location and fetch weather
+const getUserLocationWeather = async () => {
+    try {
+        const userLocation = await getUserLocation();
+        await getweather(userLocation);
+    } catch (error) {
+        console.error("Error getting user location:", error);
+        // Fallback to default location
+        getweather("Singrauli");
+    }
+};
+
+// Call getUserLocationWeather on page load
+getUserLocationWeather();
